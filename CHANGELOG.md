@@ -5,10 +5,9 @@
 
 ## [Unreleased]
 
+## [4.0.16] - 2026-07-25
 
-## [$new] - $TODAY
-
-- chore(ci): 对齐 ruff 0.16 与主仓 ruff.toml，修复 lint
+- feat: PluginMetadata.extra 增加 `help_tag`（帮助图分组）
 
 ## [4.0.14] - 2026-06-30
 - refactor(metadata): `help_audience` 由 `maintainer` 改为 `superuser`（项目无独立维护者权限等级，统一到超管）

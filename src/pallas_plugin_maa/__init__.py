@@ -83,6 +83,7 @@ __plugin_meta__ = PluginMetadata(
     homepage="https://github.com/PallasBot/Pallas-Bot",
     supported_adapters={"~onebot.v11"},
     extra={
+        "help_tag": "tool",
         "version": "3.0.0",
         "ingress_route": {"lane": "remote"},
         "command_permissions": [

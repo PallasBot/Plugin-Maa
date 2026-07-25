@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from nonebot import get_app
 from nonebot.plugin import PluginMetadata
-
 from pallas.api.metadata import (
     PLUGIN_EXTRA_VERSION,
     PLUGIN_HOMEPAGE,
     PLUGIN_MENU_TEMPLATE,
+    join_usage,
+    usage_line,
 )
-from pallas.api.metadata import join_usage, usage_line
 from pallas.api.platform import is_hub_role
 from pallas.core.platform.shard.coord.maa_hub_routes import (
     remount_maa_hub_forward_routes,

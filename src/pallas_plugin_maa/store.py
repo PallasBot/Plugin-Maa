@@ -5,10 +5,9 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from ulid import ULID
-
 from pallas.api.config import UserConfig
 from pallas.core.platform.shard import context as shard_ctx
+from ulid import ULID
 
 from .tasks import MaaTaskSpec, build_task_payload, normalize_device_id
 
@@ -86,9 +85,7 @@ class DeviceRecord:
     alias: str = ""
 
 
-def match_device_ref(
-    ref: str, devices: dict[str, DeviceRecord]
-) -> tuple[str | None, str | None]:
+def match_device_ref(ref: str, devices: dict[str, DeviceRecord]) -> tuple[str | None, str | None]:
     """按完整 id、别名或 id 前缀匹配已绑定设备。"""
     text = (ref or "").strip()
     if not text:
@@ -167,9 +164,7 @@ class MaaStore:
             return await asyncio.to_thread(was_maa_seen_sync, user, norm, ttl)
         return False
 
-    def validate_new_alias(
-        self, devices: dict[str, DeviceRecord], device: str, alias: str
-    ) -> str | None:
+    def validate_new_alias(self, devices: dict[str, DeviceRecord], device: str, alias: str) -> str | None:
         name = (alias or "").strip()
         if not name:
             return None
@@ -239,9 +234,7 @@ class MaaStore:
             return verified[0].device
         return None
 
-    async def resolve_bound_device(
-        self, qq_id: int, ref: str
-    ) -> tuple[str | None, str | None]:
+    async def resolve_bound_device(self, qq_id: int, ref: str) -> tuple[str | None, str | None]:
         devices = await self._load_devices(UserConfig(qq_id))
         return match_device_ref(ref, devices)
 
@@ -281,9 +274,7 @@ class MaaStore:
     def format_device_line(self, record: DeviceRecord, *, active: bool) -> str:
         mark = "（当前）" if active else ""
         if record.alias:
-            short = (
-                record.device if len(record.device) <= 12 else f"{record.device[:8]}…"
-            )
+            short = record.device if len(record.device) <= 12 else f"{record.device[:8]}…"
             return f"- {record.alias} [{short}]{mark}"
         return f"- {record.device}{mark}"
 
@@ -311,9 +302,7 @@ class MaaStore:
             return None
         return normalize_device_id(raw.strip()) or raw.strip()
 
-    async def _save_devices(
-        self, cfg: UserConfig, devices: dict[str, DeviceRecord]
-    ) -> None:
+    async def _save_devices(self, cfg: UserConfig, devices: dict[str, DeviceRecord]) -> None:
         payload = {
             k: {
                 "verified": v.verified,
@@ -370,11 +359,7 @@ class MaaStore:
                     self._pending[task_id] = rec
                 to_enqueue.append(rec)
                 task_ids.append(task_id)
-            if (
-                attach_screenshot
-                and specs
-                and specs[-1].task_type not in {"CaptureImage", "CaptureImageNow"}
-            ):
+            if attach_screenshot and specs and specs[-1].task_type not in {"CaptureImage", "CaptureImageNow"}:
                 shot_id = str(ULID())
                 rec = PendingTask(
                     task_id=shot_id,
@@ -446,11 +431,7 @@ class MaaStore:
 
             return await asyncio.to_thread(pending_count_for_user_sync, user_key)
         async with self._lock:
-            return sum(
-                1
-                for t in self._pending.values()
-                if t.user == user_key and not t.reported
-            )
+            return sum(1 for t in self._pending.values() if t.user == user_key and not t.reported)
 
     async def pending_count_for_device(self, qq_id: int, device: str) -> int:
         norm = normalize_device_id(device)
@@ -462,15 +443,9 @@ class MaaStore:
                 pending_count_for_device_sync,
             )
 
-            return await asyncio.to_thread(
-                pending_count_for_device_sync, user_key, norm
-            )
+            return await asyncio.to_thread(pending_count_for_device_sync, user_key, norm)
         async with self._lock:
-            return sum(
-                1
-                for t in self._pending.values()
-                if t.user == user_key and t.device == norm and not t.reported
-            )
+            return sum(1 for t in self._pending.values() if t.user == user_key and t.device == norm and not t.reported)
 
     async def clear_pending(self, qq_id: int, *, device: str | None = None) -> int:
         """移除未汇报任务；device 为 None 时清空该 QQ 全部待拉取任务。"""
@@ -486,17 +461,13 @@ class MaaStore:
             remove_ids = [
                 tid
                 for tid, t in self._pending.items()
-                if t.user == user_key
-                and not t.reported
-                and (norm is None or t.device == norm)
+                if t.user == user_key and not t.reported and (norm is None or t.device == norm)
             ]
             for tid in remove_ids:
                 del self._pending[tid]
         return len(remove_ids)
 
-    async def pending_type_counts(
-        self, qq_id: int, *, device: str | None = None
-    ) -> dict[str, int]:
+    async def pending_type_counts(self, qq_id: int, *, device: str | None = None) -> dict[str, int]:
         user_key = str(qq_id)
         norm = normalize_device_id(device) if device else None
         if shard_ctx.sharding_active():
@@ -504,9 +475,7 @@ class MaaStore:
                 pending_type_counts_sync,
             )
 
-            return await asyncio.to_thread(
-                pending_type_counts_sync, user_key, device=norm
-            )
+            return await asyncio.to_thread(pending_type_counts_sync, user_key, device=norm)
         counts: dict[str, int] = {}
         async with self._lock:
             for t in self._pending.values():

@@ -83,8 +83,8 @@ async def deliver_maa_notify(
     *,
     task_id: str = "",
 ) -> None:
-    from pallas.core.platform.shard import context as shard_ctx
     from pallas.api.platform import bot_has_local_connection
+    from pallas.core.platform.shard import context as shard_ctx
 
     bot_id = int(notify.bot_id)
     if shard_ctx.sharding_active() and not bot_has_local_connection(bot_id):
@@ -114,9 +114,7 @@ async def deliver_maa_notify(
                     task_id,
                 )
         except Exception as exc:
-            logger.warning(
-                "maa reportStatus: shard notify error task={}: {}", task_id, exc
-            )
+            logger.warning("maa reportStatus: shard notify error task={}: {}", task_id, exc)
         return
 
     try:

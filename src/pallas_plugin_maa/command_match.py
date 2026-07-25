@@ -3,7 +3,6 @@
 from nonebot.adapters import Event
 from nonebot.rule import Rule
 from nonebot.typing import T_State
-
 from pallas.api.config import matches_command_prefix
 
 BIND_COMMAND = "牛牛绑定MAA"

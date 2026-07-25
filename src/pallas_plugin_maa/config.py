@@ -1,7 +1,5 @@
+from pallas.api.config import field_help, install_hot_reload_config
 from pydantic import BaseModel, Field
-
-from pallas.api.config import install_hot_reload_config
-from pallas.api.config import field_help
 
 
 class Config(BaseModel, extra="ignore"):
@@ -65,9 +63,8 @@ class Config(BaseModel, extra="ignore"):
     )
 
 
-def on_maa_config_reload(cfg: Config) -> None:  # noqa: ARG001
+def on_maa_config_reload(cfg: Config) -> None:
     from nonebot import get_app
-
     from pallas.api.platform import is_hub_role
     from pallas.core.platform.shard import context as shard_ctx
 

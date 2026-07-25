@@ -19,7 +19,7 @@ from pallas.api.perm import (
     permission_for_command,
     private_message_permission_for_command,
 )
-from pallas.api.platform import claim_group_handler
+from pallas.api.platform import claim_group_handler, llm_command_tool_row
 from pallas.product.llm.knowledge.declare import knowledge_source_row
 
 from .command_match import (
@@ -111,6 +111,34 @@ __plugin_meta__ = PluginMetadata(
             {"id": "maa.clear_queue", "cd_sec": 3},
             {"id": "maa.raw_task", "cd_sec": 3},
             {"id": "maa.control", "cd_sec": 2},
+        ],
+        "llm_tools": [
+            llm_command_tool_row(
+                name="maa.control",
+                command_id="maa.control",
+                description=(
+                    "向已绑定的 MAA 下发远控口令。phrase 须为完整口令，"
+                    "如「牛牛长草」「牛牛作战」「牛牛公招」「牛牛基建」。须已绑定设备。"
+                ),
+                parameters={
+                    "type": "object",
+                    "properties": {
+                        "phrase": {
+                            "type": "string",
+                            "description": "完整远控口令，例如 牛牛长草",
+                        },
+                    },
+                    "required": ["phrase"],
+                },
+                command_template="{phrase}",
+            ),
+            llm_command_tool_row(
+                name="maa.status",
+                command_id="maa.status",
+                description="查看 MAA 绑定与队列状态。",
+                parameters={"type": "object", "properties": {}},
+                command_template="牛牛MAA状态",
+            ),
         ],
         "menu_data": [
             {

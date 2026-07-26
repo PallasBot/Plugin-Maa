@@ -2,6 +2,10 @@ from pallas.api.config import field_help, install_hot_reload_config
 from pydantic import BaseModel, Field
 
 
+def _ui(group: str, order: int, **extra: object) -> dict[str, object]:
+    return {"ui_group": group, "ui_order": order, **extra}
+
+
 class Config(BaseModel, extra="ignore"):
     maa_public_base_url: str = Field(
         default="",
@@ -10,6 +14,7 @@ class Config(BaseModel, extra="ignore"):
             "填 https://你的域名，末尾不要加斜杠；程序会自动拼「取任务」「报状态」两条路径",
             "多台牛牛分片时请填总机对外地址；单台本机部署可留空由程序推断",
         ),
+        json_schema_extra=_ui("对外连接", 10),
     )
     maa_get_task_endpoint: str = Field(
         default="",
@@ -18,6 +23,7 @@ class Config(BaseModel, extra="ignore"):
             "只有反代路径很特殊、无法靠「对外网址 + 相对路径」拼出来时才填",
             "留空即可",
         ),
+        json_schema_extra=_ui("对外连接", 20),
     )
     maa_report_status_endpoint: str = Field(
         default="",
@@ -25,6 +31,7 @@ class Config(BaseModel, extra="ignore"):
             "「报状态」接口的完整网址（高级）",
             "与上一项相同，一般留空",
         ),
+        json_schema_extra=_ui("对外连接", 30),
     )
     maa_get_task_path: str = Field(
         default="/maa/getTask",
@@ -32,6 +39,7 @@ class Config(BaseModel, extra="ignore"):
             "取任务接口在网址后面的路径",
             "默认 /maa/getTask，与牛牛内置路由一致时无需修改",
         ),
+        json_schema_extra=_ui("对外连接", 40),
     )
     maa_report_status_path: str = Field(
         default="/maa/reportStatus",
@@ -39,6 +47,7 @@ class Config(BaseModel, extra="ignore"):
             "报状态接口在网址后面的路径",
             "默认 /maa/reportStatus，一般无需修改",
         ),
+        json_schema_extra=_ui("对外连接", 50),
     )
     maa_attach_screenshot: bool = Field(
         default=True,
@@ -46,6 +55,7 @@ class Config(BaseModel, extra="ignore"):
             "用户发 MAA 相关指令后是否默认再截一张图",
             "开启便于在群里看到当前界面；不需要截图可关闭",
         ),
+        json_schema_extra=_ui("行为", 10),
     )
     maa_seen_ttl_seconds: int = Field(
         default=86400,
@@ -53,6 +63,7 @@ class Config(BaseModel, extra="ignore"):
             "未绑定设备在内存里保留多久（秒）",
             "例如 86400 表示一天；超时后需要让 MAA 再连一次完成绑定",
         ),
+        json_schema_extra=_ui("行为", 20),
     )
     maa_combat_auto_prepare: bool = Field(
         default=True,
@@ -60,6 +71,7 @@ class Config(BaseModel, extra="ignore"):
             "「牛牛作战」前是否自动准备关卡设置",
             "开启会先排队 Settings-Stage1，使用你已保存的主关卡候选",
         ),
+        json_schema_extra=_ui("行为", 30),
     )
 
 

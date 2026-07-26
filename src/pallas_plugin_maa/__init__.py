@@ -131,6 +131,7 @@ __plugin_meta__ = PluginMetadata(
                     "required": ["phrase"],
                 },
                 command_template="{phrase}",
+                hints=["maa", "长草", "公招", "基建", "作战", "远控"],
             ),
             llm_command_tool_row(
                 name="maa.status",
@@ -138,6 +139,7 @@ __plugin_meta__ = PluginMetadata(
                 description="查看 MAA 绑定与队列状态。",
                 parameters={"type": "object", "properties": {}},
                 command_template="牛牛MAA状态",
+                hints=["maa状态", "MAA状态", "队列状态"],
             ),
         ],
         "menu_data": [

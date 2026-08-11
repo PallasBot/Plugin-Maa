@@ -542,7 +542,7 @@ async def enqueue_and_reply(
     logger.info(
         format_plugin_event(
             "maa_enqueue",
-            f"Bot [{bot.self_id}] queued MAA task(s) for user [{qq}] (types={', '.join(s.task_type for s in specs)})",
+            f"Bot [{bot.self_id}] queued MAA task(s) for user [{qq}], types [{'、'.join(s.task_type for s in specs)}]",
         )
     )
     active = await store.get_active_device(qq)

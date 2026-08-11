@@ -261,6 +261,7 @@ __plugin_meta__ = PluginMetadata(
 
 
 remount_maa_http_routes(app)
+logger.info(format_plugin_event("ready", "Mounted MAA remote control HTTP routes"))
 
 
 def _notify_from_event(event: MessageEvent, bot: Bot) -> NotifyTarget:

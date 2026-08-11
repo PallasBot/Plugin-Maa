@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+- feat(logging): 补充 MAA 绑定、任务排队与结果投递业务事件日志
+
 ## [4.0.19] - 2026-07-26
 
 - feat(llm_tools): 为口令工具补充口语 hints

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from nonebot import get_app, get_driver, on_message
+from nonebot import get_app, get_driver, logger, on_message
 from nonebot.adapters.onebot.v11 import (
     Bot,
     GroupMessageEvent,
@@ -15,6 +15,7 @@ from pallas.api.config import (
     peel_text_prefix,
 )
 from pallas.api.limits import is_command_cooldown_ready, refresh_command_cooldown
+from pallas.api.logging import format_plugin_event
 from pallas.api.perm import (
     permission_for_command,
     private_message_permission_for_command,
@@ -372,6 +373,12 @@ async def handle_bind(event: PrivateMessageEvent):
     )
     if err:
         await bind_cmd.finish(err)
+    logger.info(
+        format_plugin_event(
+            "maa_bind",
+            f"Bot [{event.self_id}] bound MAA device [{device}] for user [{event.get_user_id()}]",
+        )
+    )
     ep = resolve_maa_http_endpoints()
     hint = ""
     if ep.inferred_base:
@@ -532,6 +539,12 @@ async def enqueue_and_reply(
     task_ids, err = await store.enqueue(qq, specs, notify, attach_screenshot=attach)
     if err:
         await matcher.finish(err)
+    logger.info(
+        format_plugin_event(
+            "maa_enqueue",
+            f"Bot [{bot.self_id}] queued MAA task(s) for user [{qq}] (types={', '.join(s.task_type for s in specs)})",
+        )
+    )
     active = await store.get_active_device(qq)
     if len(specs) == 1:
         msg = f"已向 MAA 排队任务 {specs[0].task_type}"

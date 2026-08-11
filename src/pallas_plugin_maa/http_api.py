@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from nonebot import get_bot, logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
+from pallas.api.logging import format_plugin_event
 from pydantic import BaseModel, Field
 
 from .config import get_maa_config
@@ -74,6 +75,13 @@ async def maa_report_status(body: ReportStatusRequest) -> dict[str, str]:
         segments = [MessageSegment.text("\n".join(lines))]
 
     await deliver_maa_notify(notify, segments, task_id=body.task)
+    logger.info(
+        format_plugin_event(
+            "maa_task_result",
+            f"Bot [{notify.bot_id}] delivered MAA {task.task_type} result ({body.status}) "
+            f"to user [{notify.user_id}] in group [{notify.group_id or '-'}]",
+        )
+    )
     return {"message": "ok"}
 
 

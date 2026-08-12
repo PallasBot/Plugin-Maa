@@ -3,6 +3,7 @@ from __future__ import annotations
 from nonebot import get_bot, logger
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from pallas.api.logging import format_plugin_event
+from pallas.core.foundation.logging import log_rate_limited
 from pydantic import BaseModel, Field
 
 from .config import get_maa_config
@@ -38,8 +39,11 @@ async def maa_get_task(body: GetTaskRequest) -> GetTaskResponse:
         return GetTaskResponse(tasks=[])
     tasks = await maa_store.pending_tasks_for(body.user, body.device)
     if tasks:
-        logger.info(
-            "maa getTask: user={} device={} tasks={}",
+        log_rate_limited(
+            logger,
+            "info",
+            "maa.get_task",
+            "MAA getTask served user=[{}] device=[{}] tasks=[{}]",
             body.user,
             (body.device or "")[:8],
             len(tasks),
@@ -117,18 +121,29 @@ async def deliver_maa_notify(
                 )
             if not ok:
                 logger.warning(
-                    "maa reportStatus: shard notify failed bot={} task={}",
-                    bot_id,
-                    task_id,
+                    format_plugin_event(
+                        "maa_notify_shard_failed",
+                        f"MAA shard notify failed bot=[{bot_id}] task=[{task_id}]",
+                    )
                 )
         except Exception as exc:
-            logger.warning("maa reportStatus: shard notify error task={}: {}", task_id, exc)
+            logger.warning(
+                format_plugin_event(
+                    "maa_notify_shard_error",
+                    f"MAA shard notify errored bot=[{bot_id}] task=[{task_id}]: {exc}",
+                )
+            )
         return
 
     try:
         bot = get_bot(str(bot_id))
     except Exception:
-        logger.warning("maa reportStatus: bot {} offline, task={}", bot_id, task_id)
+        logger.warning(
+            format_plugin_event(
+                "maa_notify_bot_offline",
+                f"MAA notify skipped, bot [{bot_id}] offline task=[{task_id}]",
+            )
+        )
         return
 
     try:
@@ -137,7 +152,12 @@ async def deliver_maa_notify(
         else:
             await bot.send_private_msg(user_id=notify.user_id, message=segments)
     except Exception as exc:
-        logger.warning("maa reportStatus notify failed task={}: {}", task_id, exc)
+        logger.warning(
+            format_plugin_event(
+                "maa_notify_failed",
+                f"MAA notify failed task=[{task_id}]: {exc}",
+            )
+        )
 
 
 def current_maa_http_paths() -> tuple[str, str]:

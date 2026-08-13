@@ -35,7 +35,7 @@ from .command_match import (
 )
 from .config import get_maa_config
 from .endpoints import resolve_maa_http_endpoints
-from .http_routes import remount_maa_http_routes
+from .http_routes import current_maa_http_paths, remount_maa_http_routes
 from .store import NotifyTarget, maa_store
 from .tasks import (
     MAA_RAW_TASK_PREFIX,
@@ -261,7 +261,11 @@ __plugin_meta__ = PluginMetadata(
 
 
 remount_maa_http_routes(app)
-register_plugin_startup_ready("maa", detail="MAA 远控 HTTP 路由已挂载")
+get_path, report_path = current_maa_http_paths()
+register_plugin_startup_ready(
+    "maa",
+    detail=f"MAA 远控 HTTP 路由已挂载：getTask [{get_path}]、reportStatus [{report_path}]",
+)
 
 
 def _notify_from_event(event: MessageEvent, bot: Bot) -> NotifyTarget:

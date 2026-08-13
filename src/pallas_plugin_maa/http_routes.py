@@ -36,6 +36,7 @@ def remount_maa_http_routes(app: FastAPI) -> None:
     if new_paths == _mounted_paths:
         return
 
+    remounting = bool(_mounted_paths)
     if _mounted_paths:
         app.router.routes = [route for route in app.router.routes if getattr(route, "path", None) not in _mounted_paths]
 
@@ -53,9 +54,10 @@ def remount_maa_http_routes(app: FastAPI) -> None:
         name="maa_report_status",
     )
     _mounted_paths = new_paths
-    logger.info(
-        format_plugin_event(
-            "maa_http_remounted",
-            f"MAA 远控 HTTP 路由已重挂载：getTask [{get_path}]、reportStatus [{report_path}]",
+    if remounting:
+        logger.info(
+            format_plugin_event(
+                "maa_http_remounted",
+                f"MAA 远控 HTTP 路由已重挂载：getTask [{get_path}]、reportStatus [{report_path}]",
+            )
         )
-    )

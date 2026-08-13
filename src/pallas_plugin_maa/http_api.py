@@ -56,7 +56,7 @@ async def maa_report_status(body: ReportStatusRequest) -> dict[str, str]:
     if not task:
         if body.task:
             logger.debug(
-                "maa reportStatus: 未知或已汇报任务 id={}（多为牛牛重启后 MAA 重试汇报，可忽略）",
+                "MAA reportStatus ignored unknown or already-reported task [{}] (likely a retry after bot restart)",
                 body.task,
             )
         return {"message": "ok"}

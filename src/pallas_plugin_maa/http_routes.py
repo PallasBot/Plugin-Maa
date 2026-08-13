@@ -25,7 +25,7 @@ def unmount_maa_http_routes(app: FastAPI) -> None:
         return
     app.router.routes = [route for route in app.router.routes if getattr(route, "path", None) not in _mounted_paths]
     _mounted_paths = frozenset()
-    logger.info(format_plugin_event("maa_http_unmounted", "MAA remote control HTTP routes unmounted"))
+    logger.info(format_plugin_event("maa_http_unmounted", "MAA 远控 HTTP 路由已卸载"))
 
 
 def remount_maa_http_routes(app: FastAPI) -> None:
@@ -56,6 +56,6 @@ def remount_maa_http_routes(app: FastAPI) -> None:
     logger.info(
         format_plugin_event(
             "maa_http_remounted",
-            f"MAA remote control HTTP routes remounted: getTask=[{get_path}] reportStatus=[{report_path}]",
+            f"MAA 远控 HTTP 路由已重挂载：getTask [{get_path}]、reportStatus [{report_path}]",
         )
     )

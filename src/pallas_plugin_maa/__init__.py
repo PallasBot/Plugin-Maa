@@ -15,7 +15,7 @@ from pallas.api.config import (
     peel_text_prefix,
 )
 from pallas.api.limits import is_command_cooldown_ready, refresh_command_cooldown
-from pallas.api.logging import format_plugin_event
+from pallas.api.logging import format_plugin_event, register_plugin_startup_ready
 from pallas.api.perm import (
     permission_for_command,
     private_message_permission_for_command,
@@ -261,7 +261,7 @@ __plugin_meta__ = PluginMetadata(
 
 
 remount_maa_http_routes(app)
-logger.info(format_plugin_event("ready", "Mounted MAA remote control HTTP routes"))
+register_plugin_startup_ready("maa", detail="MAA 远控 HTTP 路由已挂载")
 
 
 def _notify_from_event(event: MessageEvent, bot: Bot) -> NotifyTarget:
@@ -471,6 +471,7 @@ async def handle_clear_queue(bot: Bot, event: MessageEvent):
             await clear_queue_cmd.finish("尚未选定当前 MAA 设备，请先发「牛牛切换MAA设备」或绑定设备。")
     removed = await store.clear_pending(qq, device=device)
     left = await store.pending_count_for_user(qq)
+    logger.info("用户 [{}] 已清空 MAA 待拉取队列，删除 [{}] 条、剩余 [{}] 条", qq, removed, left)
     if device:
         await clear_queue_cmd.finish(f"已清空当前选用设备上 {removed} 条待拉取任务。本账号剩余待拉取：{left}。")
     await clear_queue_cmd.finish(f"已清空 {removed} 条待拉取任务。当前待拉取：{left}。")

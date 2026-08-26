@@ -12,6 +12,7 @@ CLEAR_QUEUE_COMMAND = "牛牛清空MAA队列"
 SWITCH_DEVICE_COMMAND = "牛牛切换MAA设备"
 DEVICE_ALIAS_COMMAND = "牛牛MAA设备名"
 RAW_TASK_COMMAND = "牛牛MAA任务"
+ENDPOINT_COMMAND = "牛牛MAA对接地址"
 
 
 def maa_command_rule(*commands: str) -> Rule:

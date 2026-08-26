@@ -28,6 +28,7 @@ from .command_match import (
     BIND_COMMAND_ALT,
     CLEAR_QUEUE_COMMAND,
     DEVICE_ALIAS_COMMAND,
+    ENDPOINT_COMMAND,
     RAW_TASK_COMMAND,
     STATUS_COMMAND,
     SWITCH_DEVICE_COMMAND,
@@ -103,6 +104,7 @@ __plugin_meta__ = PluginMetadata(
                 "default": "everyone",
             },
             {"id": "maa.status", "label": "牛牛MAA状态", "default": "everyone"},
+            {"id": "maa.endpoint", "label": "牛牛MAA对接地址", "default": "everyone"},
         ],
         "command_limits": [
             {"id": "maa.bind", "cd_sec": 3},
@@ -112,6 +114,7 @@ __plugin_meta__ = PluginMetadata(
             {"id": "maa.clear_queue", "cd_sec": 3},
             {"id": "maa.raw_task", "cd_sec": 3},
             {"id": "maa.control", "cd_sec": 2},
+            {"id": "maa.endpoint", "cd_sec": 2},
         ],
         "llm_tools": [
             llm_command_tool_row(
@@ -185,6 +188,18 @@ __plugin_meta__ = PluginMetadata(
                 "detail_des": (
                     "查看已绑定设备、当前选用哪台、待拉取任务数。"
                     "多台设备时用「牛牛切换MAA设备」；积压可「牛牛清空MAA队列」。"
+                ),
+            },
+            {
+                "func": "对接地址",
+                "trigger_method": "on_cmd",
+                "trigger_scene": "私聊",
+                "trigger_condition": "牛牛MAA对接地址",
+                "command_permission": "maa.endpoint",
+                "brief_des": "输出 MAA 对接地址",
+                "detail_des": (
+                    "直接输出 MAA「远程控制」需填写的 getTask/reportStatus 端点与用户标识符，"
+                    "实为二级帮助「MAA 对接地址」的快捷命令。"
                 ),
             },
             {
@@ -299,6 +314,13 @@ bind_cmd = on_message(
     permission=private_message_permission_for_command("maa.bind"),
 )
 
+endpoint_cmd = on_message(
+    maa_command_rule(ENDPOINT_COMMAND),
+    priority=5,
+    block=True,
+    permission=private_message_permission_for_command("maa.endpoint"),
+)
+
 status_cmd = on_message(
     maa_command_rule(STATUS_COMMAND),
     priority=5,
@@ -396,6 +418,22 @@ async def handle_bind(event: PrivateMessageEvent):
         label = f"{bind_alias.strip()}（{device}）"
     await bind_cmd.finish(
         f"已绑定设备 {label}（当前选用）。{extra}\n"
+        f"请在 MAA「远程控制」中配置：\n"
+        f"获取任务端点：{ep.get_task_url}\n"
+        f"汇报任务端点：{ep.report_status_url}\n"
+        f"用户标识符：{event.get_user_id()}{hint}"
+    )
+
+
+@endpoint_cmd.handle()
+async def handle_endpoint(event: PrivateMessageEvent):
+    if not await guard_command_cooldown(event, "maa.endpoint"):
+        return
+    ep = resolve_maa_http_endpoints()
+    hint = ""
+    if ep.inferred_base:
+        hint = "\n（地址由本机 host/port 推断，对外请让管理员配置 maa_public_base_url）"
+    await endpoint_cmd.finish(
         f"请在 MAA「远程控制」中配置：\n"
         f"获取任务端点：{ep.get_task_url}\n"
         f"汇报任务端点：{ep.report_status_url}\n"

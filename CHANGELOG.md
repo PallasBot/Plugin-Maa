@@ -3,6 +3,10 @@
 本文件依据 git tag 历史整理，版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 新提交合入后请在 `## [Unreleased]` 下记录，发布时随版本 tag 归档。
 
+## [4.0.26] - 2026-08-26
+
+- feat(maa): 新增「牛牛MAA对接地址」命令，私聊直达输出 getTask/reportStatus 端点与用户标识符
+
 ## [4.0.25] - 2026-08-14
 
 - refactor(log): MAA 路由就绪并入启动摘要，路径变更时才打重挂载日志

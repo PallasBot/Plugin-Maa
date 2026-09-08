@@ -149,6 +149,7 @@ __plugin_meta__ = PluginMetadata(
         "menu_data": [
             {
                 "func": "绑定设备",
+                "group": "设备与绑定",
                 "trigger_method": "on_cmd",
                 "trigger_scene": "私聊",
                 "trigger_condition": "牛牛绑定MAA <设备标识符> [别名]",
@@ -162,6 +163,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "远控口令",
+                "group": "任务与队列",
                 "trigger_method": "on_message",
                 "trigger_scene": "群内或私聊",
                 "trigger_condition": "牛牛长草 / 牛牛作战 / 牛牛公招 等",
@@ -171,6 +173,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "原始协议任务",
+                "group": "任务与队列",
                 "trigger_method": "on_cmd",
                 "trigger_scene": "群内或私聊",
                 "trigger_condition": "牛牛MAA任务 <type> [params]",
@@ -180,6 +183,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "查看状态",
+                "group": "状态与连接",
                 "trigger_method": "on_cmd",
                 "trigger_scene": "群内或私聊",
                 "trigger_condition": "牛牛MAA状态",
@@ -192,6 +196,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "对接地址",
+                "group": "状态与连接",
                 "trigger_method": "on_cmd",
                 "trigger_scene": "私聊",
                 "trigger_condition": "牛牛MAA对接地址",
@@ -204,6 +209,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "清空队列",
+                "group": "任务与队列",
                 "trigger_method": "on_cmd",
                 "trigger_scene": "群内或私聊",
                 "trigger_condition": "牛牛清空MAA队列 [当前]",
@@ -213,6 +219,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "切换设备",
+                "group": "设备与绑定",
                 "trigger_method": "on_cmd",
                 "trigger_scene": "私聊",
                 "trigger_condition": "牛牛切换MAA设备 <标识符或别名>",
@@ -222,6 +229,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "设备别名",
+                "group": "设备与绑定",
                 "trigger_method": "on_cmd",
                 "trigger_scene": "私聊",
                 "trigger_condition": "牛牛MAA设备名 <设备> <别名>",
@@ -231,6 +239,7 @@ __plugin_meta__ = PluginMetadata(
             },
             {
                 "func": "MAA HTTP 轮询",
+                "group": "状态与连接",
                 "trigger_method": "http",
                 "help_audience": "superuser",
                 "trigger_condition": "POST /maa/getTask、/maa/reportStatus",
